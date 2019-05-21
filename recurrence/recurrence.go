@@ -68,9 +68,21 @@ func NewRule(frequency Frequency, options ...Option) (Rule, error) {
 	return rule, nil
 }
 
+// All returns all occurrences that apply to this recurrence rule.
+func (r *Rule) All() []time.Time {
+	return r.rrule.All()
+}
+
 // Between returns all occurrences that apply to this recurrence rule between the given dates.
 func (r *Rule) Between(after, before time.Time) []time.Time {
 	return r.rrule.Between(after, before, true)
+}
+
+// Next returns the next occurrence from this rule, if there is one. If there isn't one, the bool
+// return value will be false.
+func (r *Rule) Next() (time.Time, bool) {
+	next := r.rrule.Iterator()
+	return next()
 }
 
 // MarshalJSON allows a Rule to be marshaled as JSON.
@@ -130,8 +142,8 @@ func buildRRuleROption(freq rrule.Frequency, options ...Option) (rrule.ROption, 
 			}
 
 			ropt.Byweekday = wds
-		case optionKindOccurrences:
-			ropt.Bysetpos = option.occurrences
+		case optionKindSetPositions:
+			ropt.Bysetpos = option.setPositions
 		case optionKindInterval:
 			ropt.Interval = option.interval
 		}
@@ -146,7 +158,7 @@ const (
 	optionKindEndTime
 	optionKindMonthdays
 	optionKindWeekdays
-	optionKindOccurrences
+	optionKindSetPositions
 	optionKindInterval
 )
 
@@ -155,13 +167,13 @@ type optionKind int
 
 // Option ...
 type Option struct {
-	kind        optionKind
-	starting    time.Time
-	ending      time.Time
-	monthdays   []int
-	weekdays    []time.Weekday
-	occurrences []int
-	interval    int
+	kind         optionKind
+	starting     time.Time
+	ending       time.Time
+	monthdays    []int
+	weekdays     []time.Weekday
+	setPositions []int
+	interval     int
 }
 
 // WithStartDate ...
@@ -200,11 +212,11 @@ func WithWeekdays(weekdays ...time.Weekday) Option {
 	}
 }
 
-// WithOccurrences ...
-func WithOccurrences(occurrences ...int) Option {
+// WithSetPositions ...
+func WithSetPositions(setPositions ...int) Option {
 	return Option{
-		kind:        optionKindOccurrences,
-		occurrences: occurrences,
+		kind:         optionKindSetPositions,
+		setPositions: setPositions,
 	}
 }
 

@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
+	"github.com/getbud/bud/bud"
 	"github.com/getbud/bud/recurrence"
 )
 
@@ -12,7 +14,7 @@ func main() {
 	now := time.Now()
 
 	payRule, err := recurrence.NewRule(recurrence.Monthly,
-		recurrence.WithOccurrences(-1),
+		recurrence.WithSetPositions(-1),
 		recurrence.WithStartDate(now.Year(), now.Month(), now.Day()),
 		recurrence.WithWeekdays(
 			time.Monday,
@@ -27,25 +29,22 @@ func main() {
 		panic(err)
 	}
 
-	occurrences := payRule.Between(time.Now(), time.Now().AddDate(0, 1, 0))
+	payPT := bud.PlannedTransaction{
+		Description: "Monthly pay",
+		Amount:      1000000,
+		Recurrence:  &payRule,
+	}
 
-	spew.Dump(occurrences)
+	buf := &bytes.Buffer{}
 
-	fmt.Println("payRule", payRule)
+	enc := json.NewEncoder(buf)
+	enc.SetIndent("", "  ")
+	enc.SetEscapeHTML(true)
 
-	rentRule, err := recurrence.NewRule(recurrence.Monthly,
-		recurrence.WithMonthdays(10),
-		recurrence.WithStartDate(2019, time.June, 10),
-		recurrence.WithEndDate(2019, time.October, 10),
-	)
-
+	err = enc.Encode(payPT)
 	if err != nil {
 		panic(err)
 	}
 
-	occurrences = rentRule.Between(time.Now(), time.Now().AddDate(1, 0, 0))
-
-	spew.Dump(occurrences)
-
-	fmt.Println("rentRule", rentRule)
+	fmt.Println(buf.String())
 }

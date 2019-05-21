@@ -6,8 +6,9 @@ import "github.com/getbud/bud/recurrence"
 // one-off payment, or something that is recurring.
 type PlannedTransaction struct {
 	// TODO: Account to apply transaction to.
-	Amount     int              `json:"amount"`
-	Recurrence *recurrence.Rule `json:"recurrence,omitempty"`
+	Description string           `json:"description"`
+	Amount      int              `json:"amount"`
+	Recurrence  *recurrence.Rule `json:"recurrence,omitempty"`
 }
 
 // Transaction represents a transaction that has happened, i.e. it has been reflected in a
