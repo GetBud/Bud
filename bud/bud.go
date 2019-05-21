@@ -15,5 +15,6 @@ type PlannedTransaction struct {
 // statement that has been imported.
 type Transaction struct {
 	// TODO: ...
-	Amount int `json:"amount"`
+	Description string `json:"description"`
+	Amount      int    `json:"amount"`
 }
