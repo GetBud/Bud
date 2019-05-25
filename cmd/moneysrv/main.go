@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"time"
 
 	"github.com/getbud/bud/bud"
@@ -11,6 +12,17 @@ import (
 )
 
 func main() {
+	r := regexp.MustCompile(`(\d{4})-(\d{2})-(\d{2})`)
+
+	matches := r.FindStringSubmatch(`2015-05-27`)
+
+	args := make([]interface{}, 0, len(matches))
+	for _, match := range matches {
+		args = append(args, match)
+	}
+
+	fmt.Printf("%s %s %s %s\n", args...)
+
 	now := time.Now()
 
 	payRule, err := recurrence.NewRule(recurrence.Monthly,
@@ -32,7 +44,7 @@ func main() {
 	payPT := bud.PlannedTransaction{
 		Description: "Monthly pay",
 		Amount:      1000000,
-		Recurrence:  &payRule,
+		Recurrence:  payRule,
 	}
 
 	buf := &bytes.Buffer{}
