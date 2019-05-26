@@ -1,0 +1,52 @@
+syntax = "proto3";
+package proto;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+option (gogoproto.goproto_registration) = true;
+
+// Account mirrors bud.Account.
+message Account {
+    string uuid = 1 [(gogoproto.customname) = "UUID"];
+    string name = 2;
+    int64 balance = 3;
+}
+
+// Category mirrors bud.Category.
+message Category {
+    string uuid = 1 [(gogoproto.customname) = "UUID"];
+    string name = 2;
+}
+
+// PlannedTransaction mirrors bud.PlannedTransaction.
+message PlannedTransaction {
+    string uuid = 1 [(gogoproto.customname) = "UUID"];
+    string account_uuid = 2 [(gogoproto.customname) = "AccountUUID"];
+    string category_uuid = 3 [(gogoproto.customname) = "CategoryUUID"];
+    string description = 4;
+    int64 amount = 5;
+    string recurrence = 6;
+}
+
+// Transaction mirrors bud.Transaction.
+message Transaction {
+    string uuid = 1 [(gogoproto.customname) = "UUID"];
+    string account_uuid = 2 [(gogoproto.customname) = "AccountUUID"];
+    string category_uuid = 3 [(gogoproto.customname) = "CategoryUUID"];
+    string planned_transaction_uuid = 4 [(gogoproto.customname) = "PlannedTransactionUUID"];
+    string transformation_uuid = 5 [(gogoproto.customname) = "TransformationUUID"];
+    string description = 6;
+    int64 amount = 7;
+    google.protobuf.Timestamp transacted_at = 8;
+}
+
+// Transformation mirrors bud.Transformation.
+message Transformation {
+    string uuid = 1 [(gogoproto.customname) = "UUID"];
+    string description = 2;
+    string pattern = 3;
+    string category_uuid = 4 [(gogoproto.customname) = "CategoryUUID"];
+    string planned_transaction_uuid = 5 [(gogoproto.customname) = "PlannedTransactionUUID"];
+    string description_format = 6;
+}

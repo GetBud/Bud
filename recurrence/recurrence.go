@@ -68,6 +68,18 @@ func NewRule(frequency Frequency, options ...Option) (Rule, error) {
 	return rule, nil
 }
 
+// NewRuleFromString returns a new recurrence rule using the given string value.
+func NewRuleFromString(input string) (Rule, error) {
+	rr, err := rrule.StrToRRule(input)
+	if err != nil {
+		return Rule{}, errors.Wrap(err, "recurrence: failed to parse rule string")
+	}
+
+	return Rule{
+		rrule: rr,
+	}, nil
+}
+
 // All returns all occurrences that apply to this recurrence rule.
 func (r *Rule) All() []time.Time {
 	return r.rrule.All()
