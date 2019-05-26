@@ -29,3 +29,7 @@ func Column(name string) stmt.Column {
 func OrderBy(column stmt.Column, direction token.Order) stmt.OrderBy {
 	return stmt.NewOrderBy(column, direction)
 }
+
+func On(left, right stmt.OnExpression) stmt.OnExpression {
+	return stmt.NewOn()
+}

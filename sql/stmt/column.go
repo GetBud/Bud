@@ -40,6 +40,11 @@ func (c Column) WriteExpression(w *rendering.Writer) {
 	}
 }
 
+// WriteOnExpression ...
+func (c Column) WriteOnExpression(w *rendering.Writer) {
+	c.WriteExpression(w)
+}
+
 // WriteStatement ...
 func (c Column) WriteReference(w *rendering.Writer) {
 	if c.Alias != "" {
