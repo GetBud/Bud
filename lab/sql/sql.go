@@ -1,9 +1,9 @@
 package sql
 
 import (
-	"github.com/getbud/bud/sql/builder"
-	"github.com/getbud/bud/sql/stmt"
-	"github.com/getbud/bud/sql/token"
+	"github.com/getbud/bud/lab/sql/builder"
+	"github.com/getbud/bud/lab/sql/stmt"
+	"github.com/getbud/bud/lab/sql/token"
 )
 
 // Select ...

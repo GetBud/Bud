@@ -1,8 +1,8 @@
 package stmt
 
 import (
-	"github.com/getbud/bud/sql/rendering"
-	"github.com/getbud/bud/sql/token"
+	"github.com/getbud/bud/lab/sql/rendering"
+	"github.com/getbud/bud/lab/sql/token"
 )
 
 // OrderBy ...

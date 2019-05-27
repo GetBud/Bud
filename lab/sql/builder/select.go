@@ -1,8 +1,8 @@
 package builder
 
 import (
-	"github.com/getbud/bud/sql/rendering"
-	"github.com/getbud/bud/sql/stmt"
+	"github.com/getbud/bud/lab/sql/rendering"
+	"github.com/getbud/bud/lab/sql/stmt"
 )
 
 // Select ...
@@ -44,8 +44,8 @@ func (s Select) OrderBy(orderBys ...stmt.OrderBy) Select {
 	return s
 }
 
-// Query ...
-func (s Select) Query() (string, []interface{}) {
+// Build ...
+func (s Select) Build() (string, []interface{}) {
 	w := rendering.NewWriter()
 
 	s.stmt.WriteStatement(w)

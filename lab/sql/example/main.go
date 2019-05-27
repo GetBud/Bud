@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/getbud/bud/sql"
-	"github.com/getbud/bud/sql/token"
+	"github.com/getbud/bud/lab/sql"
+	"github.com/getbud/bud/lab/sql/token"
 )
 
 var (
@@ -27,7 +27,7 @@ func main() {
 			sql.OrderBy(usersNameCol, token.Asc),
 			sql.OrderBy(usersEmailCol, token.Desc),
 		).
-		Query()
+		Build()
 
 	fmt.Println(qry)
 }

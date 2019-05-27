@@ -1,7 +1,7 @@
 package stmt
 
 import (
-	"github.com/getbud/bud/sql/rendering"
+	"github.com/getbud/bud/lab/sql/rendering"
 )
 
 // Table ...

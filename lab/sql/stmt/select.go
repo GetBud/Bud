@@ -1,6 +1,6 @@
 package stmt
 
-import "github.com/getbud/bud/sql/rendering"
+import "github.com/getbud/bud/lab/sql/rendering"
 
 // Select ...
 type Select struct {
