@@ -1,27 +1,25 @@
 package stmt
 
-import (
-	"github.com/getbud/bud/lab/sql/rendering"
-)
+import "github.com/getbud/bud/lab/sql/builder"
 
 // Table ...
 type Table struct {
-	Schema Schema
-	Name   string
-	Alias  string
+	schema Schema
+	name   string
+	alias  string
 }
 
 // NewTable returns a new Table.
 func NewTable(schema Schema, name string) Table {
 	return Table{
-		Schema: schema,
-		Name:   name,
+		schema: schema,
+		name:   name,
 	}
 }
 
 // As ...
 func (t Table) As(alias string) Table {
-	t.Alias = alias
+	t.alias = alias
 	return t
 }
 
@@ -32,34 +30,15 @@ func (t Table) Column(name string) Column {
 
 // IsEmpty ...
 func (t Table) IsEmpty() bool {
-	return t.Name == ""
+	return t.name == ""
 }
 
-// WriteExpression ...
-func (t Table) WriteExpression(w *rendering.Writer) {
-	if t.Schema.Name != "" {
-		w.Write(t.Schema.Name)
-		w.Write(".")
-	}
+// WriteFromItem ...
+func (t Table) WriteFromItem(ctx *builder.Context) {
+	ctx.Write(t.name)
 
-	w.Write(t.Name)
-
-	if t.Alias != "" {
-		w.Write(" AS ")
-		w.Write(t.Alias)
-	}
-}
-
-// WriteStatement ...
-func (t Table) WriteReference(w *rendering.Writer) {
-	if t.Alias != "" {
-		w.Write(t.Alias)
-	} else {
-		if !t.Schema.IsEmpty() {
-			t.Schema.WriteReference(w)
-			w.Write(".")
-		}
-
-		w.Write(t.Name)
+	if t.alias != "" {
+		ctx.Write(" AS ")
+		ctx.Write(t.alias)
 	}
 }

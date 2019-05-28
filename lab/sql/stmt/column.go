@@ -1,57 +1,48 @@
 package stmt
 
-import (
-	"github.com/getbud/bud/lab/sql/rendering"
-)
+import "github.com/getbud/bud/lab/sql/builder"
 
 // Column ...
 type Column struct {
-	Table Table
-	Name  string
-	Alias string
+	table Table
+	name  string
+	alias string
 }
 
 // NewColumn returns a new Column.
 func NewColumn(table Table, name string) Column {
 	return Column{
-		Table: table,
-		Name:  name,
+		table: table,
+		name:  name,
 	}
 }
 
-// As ...
+// Alias ...
+func (c Column) Alias() string {
+	return c.alias
+}
+
 func (c Column) As(alias string) Column {
-	c.Alias = alias
+	c.alias = alias
 	return c
 }
 
 // WriteExpression ...
-func (c Column) WriteExpression(w *rendering.Writer) {
-	if !c.Table.IsEmpty() {
-		c.Table.WriteReference(w)
-		w.Write(".")
+func (c Column) WriteExpression(ctx *builder.Context) {
+	if !c.table.IsEmpty() {
+		if c.table.alias != "" {
+			ctx.Write(c.table.alias)
+		} else {
+			if !c.table.schema.IsEmpty() {
+				ctx.Write(c.table.schema.Name)
+				ctx.Write(".")
+			}
+
+			ctx.Write(c.table.name)
+		}
+
+		ctx.Write(".")
 	}
 
-	w.Write(c.Name)
-
-	if c.Alias != "" {
-		w.Write(" AS ")
-		w.Write(c.Alias)
-	}
-}
-
-// WriteOnExpression ...
-func (c Column) WriteOnExpression(w *rendering.Writer) {
-	c.WriteExpression(w)
-}
-
-// WriteStatement ...
-func (c Column) WriteReference(w *rendering.Writer) {
-	if c.Alias != "" {
-		w.Write(c.Alias)
-	} else {
-		c.Table.WriteReference(w)
-		w.Write(".")
-		w.Write(c.Name)
-	}
+	ctx.Write(c.name)
 }

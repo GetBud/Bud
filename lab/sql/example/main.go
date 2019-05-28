@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/getbud/bud/lab/sql"
-	"github.com/getbud/bud/lab/sql/token"
 )
 
 var (
@@ -16,18 +15,21 @@ var (
 	usersEmailCol = usersTable.Column("email")
 
 	accountsTable = sql.Schema("bud").Table("accounts").As("a")
+
+	accountsIDCol = accountsTable.Column("id")
 )
 
 func main() {
-	qry, _ := sql.Select().
-		Columns(usersIDCol, usersNameCol.As("username"), usersEmailCol).
-		From(usersTable).
-		InnerJoin(accountsTable).
-		OrderBy(
-			sql.OrderBy(usersNameCol, token.Asc),
-			sql.OrderBy(usersEmailCol, token.Desc),
+	qry, args := sql.
+		Select(
+			usersIDCol,
+			usersNameCol.As("username"),
+			usersEmailCol,
+			sql.Function("COUNT", accountsIDCol).As("count"),
 		).
+		From(usersTable).
 		Build()
 
 	fmt.Println(qry)
+	fmt.Println(args)
 }

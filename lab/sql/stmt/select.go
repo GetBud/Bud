@@ -1,66 +1,72 @@
 package stmt
 
-import "github.com/getbud/bud/lab/sql/rendering"
+import "github.com/getbud/bud/lab/sql/builder"
 
 // Select ...
 type Select struct {
-	Distinct bool
-	Columns  []Column
-	Tables   []Table
-	OrderBys []OrderBy
-	Alias    string
+	distinct          bool
+	selectExpressions []SelectExpression
+	tables            []Table
+	alias             string
+}
+
+// NewSelect ...
+func NewSelect(selectExpressions ...SelectExpression) Select {
+	return Select{
+		selectExpressions: selectExpressions,
+	}
+}
+
+// Distinct ...
+func (s Select) Distinct() Select {
+	s.distinct = true
+	return s
+}
+
+// From ...
+func (s Select) From(tables ...Table) Select {
+	s.tables = tables
+	return s
 }
 
 // As ...
 func (s Select) As(alias string) Select {
-	s.Alias = alias
+	s.alias = alias
 	return s
 }
 
-// WriteExpression ...
-func (s Select) WriteExpression(w *rendering.Writer) {
-	s.WriteStatement(w)
+// Build ...
+func (s Select) Build() (string, []interface{}) {
+	ctx := builder.NewContext()
+	ctx.Write("SELECT ")
 
-	if s.Alias != "" {
-		w.Write(" AS ")
-		w.Write(s.Alias)
-	}
-}
+	if len(s.selectExpressions) > 0 {
+		for i, expr := range s.selectExpressions {
+			expr.WriteExpression(ctx)
 
-// WriteStatement ...
-func (s Select) WriteStatement(w *rendering.Writer) {
-	w.Write("SELECT ")
+			if alias := expr.Alias(); alias != "" {
+				ctx.Write(" AS ")
+				ctx.Write(alias)
+			}
 
-	if len(s.Columns) > 0 {
-		for i, col := range s.Columns {
-			col.WriteExpression(w)
-			if i != len(s.Columns)-1 {
-				w.Write(", ")
+			if i < len(s.selectExpressions)-1 {
+				ctx.Write(", ")
 			}
 		}
 	} else {
-		w.Write("*")
+		ctx.Write("*")
 	}
 
-	if len(s.Tables) > 0 {
-		w.Write(" FROM ")
+	ctx.Write(" FROM ")
 
-		for i, tab := range s.Tables {
-			tab.WriteExpression(w)
-			if i != len(s.Tables)-1 {
-				w.Write(", ")
-			}
+	// TODO: Change me...
+	for i, tab := range s.tables {
+		tab.WriteFromItem(ctx)
+
+		if i < len(s.selectExpressions)-1 {
+			ctx.Write(", ")
 		}
 	}
 
-	if len(s.OrderBys) > 0 {
-		w.Write(" ORDER BY ")
-
-		for i, o := range s.OrderBys {
-			o.WriteExpression(w)
-			if i != len(s.OrderBys)-1 {
-				w.Write(", ")
-			}
-		}
-	}
+	return ctx.String(), ctx.Args()
 }

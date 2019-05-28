@@ -92,7 +92,7 @@ type Transformation struct {
 	PlannedTransactionUUID string `json:"planned_transaction_uuid,omitempty"`
 	// DescriptionFormat presents a format that may be used for creating a new name for a matching
 	// Transaction. The format may include numbered 'variables' captured by this Transformation's
-	// pattern via Regular Expression capture groups. For example; given the following regular
+	// pattern via Regular expression capture groups. For example; given the following regular
 	// expression: '^SUZUKI FINANCE (\d+)$', the description format could be 'Suzuki Finance: $1'.
 	DescriptionFormat string
 }
