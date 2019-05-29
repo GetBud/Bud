@@ -1,6 +1,9 @@
 package stmt
 
-import "github.com/getbud/bud/lab/sql/builder"
+import (
+	"github.com/getbud/bud/lab/sql/builder"
+	"github.com/getbud/bud/lab/sql/token"
+)
 
 // Column ...
 type Column struct {
@@ -27,8 +30,8 @@ func (c Column) As(alias string) Column {
 	return c
 }
 
-// WriteExpression ...
-func (c Column) WriteExpression(ctx *builder.Context) {
+// BuildExpression ...
+func (c Column) BuildExpression(ctx *builder.Context) {
 	if !c.table.IsEmpty() {
 		if c.table.alias != "" {
 			ctx.Write(c.table.alias)
@@ -45,4 +48,9 @@ func (c Column) WriteExpression(ctx *builder.Context) {
 	}
 
 	ctx.Write(c.name)
+}
+
+// Eq ...
+func (c Column) Eq(expr Expression) Condition {
+	return NewCondition(c, expr, token.Equal)
 }

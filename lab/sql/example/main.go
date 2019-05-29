@@ -28,6 +28,7 @@ func main() {
 			sql.Function("COUNT", accountsIDCol).As("count"),
 		).
 		From(usersTable).
+		Where(usersIDCol.Eq(accountsIDCol)).
 		Build()
 
 	fmt.Println(qry)

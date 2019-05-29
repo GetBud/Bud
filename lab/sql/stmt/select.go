@@ -7,6 +7,7 @@ type Select struct {
 	distinct          bool
 	selectExpressions []SelectExpression
 	tables            []Table
+	whereConditions   []Condition
 	alias             string
 }
 
@@ -23,9 +24,21 @@ func (s Select) Distinct() Select {
 	return s
 }
 
+// Select ...
+func (s Select) Select(expressions ...SelectExpression) Select {
+	s.selectExpressions = append(s.selectExpressions, expressions...)
+	return s
+}
+
 // From ...
 func (s Select) From(tables ...Table) Select {
-	s.tables = tables
+	s.tables = append(s.tables, tables...)
+	return s
+}
+
+// Where ...
+func (s Select) Where(conditions ...Condition) Select {
+	s.whereConditions = append(s.whereConditions, conditions...)
 	return s
 }
 
@@ -42,7 +55,7 @@ func (s Select) Build() (string, []interface{}) {
 
 	if len(s.selectExpressions) > 0 {
 		for i, expr := range s.selectExpressions {
-			expr.WriteExpression(ctx)
+			expr.BuildExpression(ctx)
 
 			if alias := expr.Alias(); alias != "" {
 				ctx.Write(" AS ")
@@ -63,8 +76,21 @@ func (s Select) Build() (string, []interface{}) {
 	for i, tab := range s.tables {
 		tab.WriteFromItem(ctx)
 
-		if i < len(s.selectExpressions)-1 {
+		if i < len(s.tables)-1 {
 			ctx.Write(", ")
+		}
+	}
+
+	if len(s.whereConditions) > 0 {
+		ctx.Write(" WHERE ")
+
+		for i, wc := range s.whereConditions {
+			wc.BuildCondition(ctx)
+
+			if i < len(s.whereConditions)-1 {
+				// TODO: How to approach AND/OR?..
+				ctx.Write(" AND ")
+			}
 		}
 	}
 

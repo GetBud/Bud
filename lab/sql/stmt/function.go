@@ -32,13 +32,13 @@ func (f Function) Alias() string {
 	return f.alias
 }
 
-// WriteExpression ...
-func (f Function) WriteExpression(ctx *builder.Context) {
+// BuildExpression ...
+func (f Function) BuildExpression(ctx *builder.Context) {
 	ctx.Write(f.name)
 	ctx.Write("(")
 
 	for i, arg := range f.args {
-		arg.WriteExpression(ctx)
+		arg.BuildExpression(ctx)
 
 		if i < len(f.args)-1 {
 			ctx.Write(", ")
