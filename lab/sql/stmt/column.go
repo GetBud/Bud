@@ -32,6 +32,8 @@ func (c Column) As(alias string) Column {
 
 // BuildExpression ...
 func (c Column) BuildExpression(ctx *builder.Context) {
+	ctx.Write(`"`)
+
 	if !c.table.IsEmpty() {
 		if c.table.alias != "" {
 			ctx.Write(c.table.alias)
@@ -48,6 +50,7 @@ func (c Column) BuildExpression(ctx *builder.Context) {
 	}
 
 	ctx.Write(c.name)
+	ctx.Write(`"`)
 }
 
 // Eq ...

@@ -36,6 +36,7 @@ func main() {
 			usersEmailCol.Eq(usersIDCol),
 		)).
 		Where(usersNameCol.Eq(sql.String("seeruk"))).
+		Having(usersNameCol.Eq(sql.String("seeruk"))).
 		Build()
 
 	fmt.Println(qry)

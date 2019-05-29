@@ -35,7 +35,9 @@ func (t Table) IsEmpty() bool {
 
 // WriteFromItem ...
 func (t Table) WriteFromItem(ctx *builder.Context) {
+	ctx.Write(`"`)
 	ctx.Write(t.name)
+	ctx.Write(`"`)
 
 	if t.alias != "" {
 		ctx.Write(" AS ")

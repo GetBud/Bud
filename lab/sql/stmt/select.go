@@ -8,6 +8,7 @@ type Select struct {
 	selectExpressions []SelectExpression
 	tables            []Table
 	whereConditions   []Condition
+	havingConditions  []Condition
 	alias             string
 }
 
@@ -42,6 +43,12 @@ func (s Select) Where(conditions ...Condition) Select {
 	return s
 }
 
+// Having ...
+func (s Select) Having(conditions ...Condition) Select {
+	s.havingConditions = append(s.havingConditions, conditions...)
+	return s
+}
+
 // As ...
 func (s Select) As(alias string) Select {
 	s.alias = alias
@@ -52,6 +59,10 @@ func (s Select) As(alias string) Select {
 func (s Select) Build() (string, []interface{}) {
 	ctx := builder.NewContext()
 	ctx.Write("SELECT ")
+
+	if s.distinct {
+		ctx.Write("DISTINCT ")
+	}
 
 	if len(s.selectExpressions) > 0 {
 		for i, expr := range s.selectExpressions {
@@ -99,6 +110,29 @@ func (s Select) Build() (string, []interface{}) {
 
 			// By default, the relationship is where. If an OR is needed, then wrap using sql.Or.
 			if i < len(s.whereConditions)-1 {
+				ctx.Write(" AND ")
+			}
+		}
+	}
+
+	if len(s.havingConditions) > 0 {
+		ctx.Write(" HAVING ")
+
+		for i, wc := range s.havingConditions {
+			isList := wc.IsList()
+
+			if isList {
+				ctx.Write("(")
+			}
+
+			wc.BuildCondition(ctx)
+
+			if isList {
+				ctx.Write(")")
+			}
+
+			// By default, the relationship is where. If an OR is needed, then wrap using sql.Or.
+			if i < len(s.havingConditions)-1 {
 				ctx.Write(" AND ")
 			}
 		}
