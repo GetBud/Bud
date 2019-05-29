@@ -6,25 +6,77 @@ import (
 )
 
 // Condition ...
-type Condition struct {
-	left, right Expression
-	operator    token.ComparisonOperator
+type Condition interface {
+	IsList() bool
+	BuildCondition(ctx *builder.Context)
 }
 
-// NewCondition returns a new Condition.
-func NewCondition(left, right Expression, operator token.ComparisonOperator) Condition {
-	return Condition{
-		left:     left,
-		right:    right,
-		operator: operator,
+// ConditionList ...
+type ConditionList struct {
+	operator   token.LogicalOperator
+	conditions []Condition
+}
+
+func NewConditionList(operator token.LogicalOperator, conditions ...Condition) ConditionList {
+	return ConditionList{
+		operator:   operator,
+		conditions: conditions,
 	}
 }
 
 // BuildCondition ...
-func (c Condition) BuildCondition(ctx *builder.Context) {
+func (c ConditionList) BuildCondition(ctx *builder.Context) {
+	for i, condition := range c.conditions {
+		isList := condition.IsList()
+
+		if isList {
+			ctx.Write("(")
+		}
+
+		condition.BuildCondition(ctx)
+
+		if isList {
+			ctx.Write(")")
+		}
+
+		if i < len(c.conditions)-1 {
+			ctx.Write(" ")
+			ctx.Write(string(c.operator))
+			ctx.Write(" ")
+		}
+	}
+}
+
+// IsList ...
+func (c ConditionList) IsList() bool {
+	return true
+}
+
+// ComparisonCondition ...
+type ComparisonCondition struct {
+	operator    token.ComparisonOperator
+	left, right Expression
+}
+
+// NewComparisonCondition returns a new ComparisonCondition.
+func NewComparisonCondition(operator token.ComparisonOperator, left, right Expression) ComparisonCondition {
+	return ComparisonCondition{
+		operator: operator,
+		left:     left,
+		right:    right,
+	}
+}
+
+// BuildCondition ...
+func (c ComparisonCondition) BuildCondition(ctx *builder.Context) {
 	c.left.BuildExpression(ctx)
 	ctx.Write(" ")
 	ctx.Write(string(c.operator))
 	ctx.Write(" ")
 	c.right.BuildExpression(ctx)
+}
+
+// IsList ...
+func (c ComparisonCondition) IsList() bool {
+	return false
 }

@@ -14,6 +14,11 @@ func NewContext() *Context {
 	return &Context{}
 }
 
+// AddArgs ...
+func (c *Context) AddArgs(args ...interface{}) {
+	c.args = append(c.args, args...)
+}
+
 // Args ...
 func (c *Context) Args() []interface{} {
 	return c.args

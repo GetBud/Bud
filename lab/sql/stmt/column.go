@@ -52,5 +52,5 @@ func (c Column) BuildExpression(ctx *builder.Context) {
 
 // Eq ...
 func (c Column) Eq(expr Expression) Condition {
-	return NewCondition(c, expr, token.Equal)
+	return NewComparisonCondition(token.Equal, c, expr)
 }

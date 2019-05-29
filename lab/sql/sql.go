@@ -2,6 +2,7 @@ package sql
 
 import (
 	"github.com/getbud/bud/lab/sql/stmt"
+	"github.com/getbud/bud/lab/sql/token"
 )
 
 // SelectBuilder ...
@@ -29,4 +30,24 @@ func Column(name string) stmt.Column {
 // making functions for many of them. May be best to be in another package though?
 func Function(name string, args ...stmt.Expression) stmt.Function {
 	return stmt.NewFunction(name, args...)
+}
+
+// And ...
+func And(conditions ...stmt.Condition) stmt.ConditionList {
+	return stmt.NewConditionList(token.And, conditions...)
+}
+
+// Or ...
+func Or(conditions ...stmt.Condition) stmt.ConditionList {
+	return stmt.NewConditionList(token.Or, conditions...)
+}
+
+// Int ...
+func Int(val int) stmt.Int {
+	return stmt.NewInt(val)
+}
+
+// String ...
+func String(val string) stmt.String {
+	return stmt.NewString(val)
 }

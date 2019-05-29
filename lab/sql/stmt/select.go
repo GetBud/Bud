@@ -85,10 +85,20 @@ func (s Select) Build() (string, []interface{}) {
 		ctx.Write(" WHERE ")
 
 		for i, wc := range s.whereConditions {
+			isList := wc.IsList()
+
+			if isList {
+				ctx.Write("(")
+			}
+
 			wc.BuildCondition(ctx)
 
+			if isList {
+				ctx.Write(")")
+			}
+
+			// By default, the relationship is where. If an OR is needed, then wrap using sql.Or.
 			if i < len(s.whereConditions)-1 {
-				// TODO: How to approach AND/OR?..
 				ctx.Write(" AND ")
 			}
 		}

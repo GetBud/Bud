@@ -3,6 +3,8 @@ package stmt
 import (
 	"strings"
 
+	"github.com/getbud/bud/lab/sql/token"
+
 	"github.com/getbud/bud/lab/sql/builder"
 )
 
@@ -46,4 +48,9 @@ func (f Function) BuildExpression(ctx *builder.Context) {
 	}
 
 	ctx.Write(")")
+}
+
+// Eq ...
+func (f Function) Eq(expr Expression) Condition {
+	return NewComparisonCondition(token.Equal, f, expr)
 }
