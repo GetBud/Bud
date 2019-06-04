@@ -80,3 +80,19 @@ func (c ComparisonCondition) BuildCondition(ctx *builder.Context) {
 func (c ComparisonCondition) IsList() bool {
 	return false
 }
+
+// Expression ...
+type Expression interface {
+	BuildExpression(ctx *builder.Context)
+}
+
+// SelectExpression ...
+type SelectExpression interface {
+	Expression
+	Alias() string
+}
+
+// FromItem ...
+type FromItem interface {
+	WriteFromItem(ctx *builder.Context)
+}

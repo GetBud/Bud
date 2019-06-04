@@ -6,7 +6,7 @@ import "github.com/getbud/bud/lab/sql/builder"
 type Select struct {
 	distinct          bool
 	selectExpressions []SelectExpression
-	tables            []Table
+	fromItems         []FromItem
 	whereConditions   []Condition
 	havingConditions  []Condition
 	alias             string
@@ -32,8 +32,8 @@ func (s Select) Select(expressions ...SelectExpression) Select {
 }
 
 // From ...
-func (s Select) From(tables ...Table) Select {
-	s.tables = append(s.tables, tables...)
+func (s Select) From(fromItems ...FromItem) Select {
+	s.fromItems = append(s.fromItems, fromItems...)
 	return s
 }
 
@@ -55,9 +55,16 @@ func (s Select) As(alias string) Select {
 	return s
 }
 
-// Build ...
-func (s Select) Build() (string, []interface{}) {
-	ctx := builder.NewContext()
+// WriteFromItem ...
+func (s Select) WriteFromItem(ctx *builder.Context) {
+	ctx.Write("(")
+	s.WriteStatement(ctx)
+	ctx.Write(") AS ")
+	ctx.Write(s.alias)
+}
+
+// WriteStatement ...
+func (s Select) WriteStatement(ctx *builder.Context) {
 	ctx.Write("SELECT ")
 
 	if s.distinct {
@@ -81,14 +88,15 @@ func (s Select) Build() (string, []interface{}) {
 		ctx.Write("*")
 	}
 
-	ctx.Write(" FROM ")
+	if len(s.fromItems) > 0 {
+		ctx.Write(" FROM ")
 
-	// TODO: Change me...
-	for i, tab := range s.tables {
-		tab.WriteFromItem(ctx)
+		for i, fromItem := range s.fromItems {
+			fromItem.WriteFromItem(ctx)
 
-		if i < len(s.tables)-1 {
-			ctx.Write(", ")
+			if i < len(s.fromItems)-1 {
+				ctx.Write(", ")
+			}
 		}
 	}
 
@@ -137,6 +145,13 @@ func (s Select) Build() (string, []interface{}) {
 			}
 		}
 	}
+}
+
+// Build ...
+func (s Select) Build() (string, []interface{}) {
+	ctx := builder.NewContext()
+
+	s.WriteStatement(ctx)
 
 	return ctx.String(), ctx.Args()
 }

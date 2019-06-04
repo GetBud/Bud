@@ -3,9 +3,8 @@ package stmt
 import (
 	"strings"
 
-	"github.com/getbud/bud/lab/sql/token"
-
 	"github.com/getbud/bud/lab/sql/builder"
+	"github.com/getbud/bud/lab/sql/token"
 )
 
 // Function ...

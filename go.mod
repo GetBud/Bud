@@ -8,4 +8,5 @@ require (
 	github.com/icelolly/go-errors v0.1.0
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/teambition/rrule-go v1.4.0
+	gopkg.in/doug-martin/goqu.v5 v5.0.0
 )

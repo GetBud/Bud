@@ -19,14 +19,21 @@ var (
 )
 
 func main() {
+	subquery := sql.Select(usersIDCol).From(usersTable)
+
 	qry, args := sql.
 		Select(
 			usersIDCol,
 			usersNameCol.As("username"),
 			usersEmailCol,
 			sql.Function("COUNT", accountsIDCol).As("count"),
+			sql.Function("COUNT", sql.Int(1)).As("count2"),
+			sql.String("sup").As("greeting"),
+			sql.Int(42).As("meaning_of_life"),
 		).
 		From(usersTable).
+		From(subquery.As("hello")).
+		From(subquery.As("hello2")).
 		Where(sql.And(
 			usersIDCol.Eq(accountsIDCol),
 			sql.Function("COUNT", accountsIDCol).Eq(sql.Int(123)),

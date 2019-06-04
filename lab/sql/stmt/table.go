@@ -28,6 +28,11 @@ func (t Table) Column(name string) Column {
 	return NewColumn(t, name)
 }
 
+// C ...
+func (t Table) C(name string) Column {
+	return t.Column(name)
+}
+
 // IsEmpty ...
 func (t Table) IsEmpty() bool {
 	return t.name == ""
