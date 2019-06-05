@@ -28,6 +28,7 @@ func main() {
 			usersEmailCol,
 			sql.Function("COUNT", accountsIDCol).As("count"),
 			sql.Function("COUNT", sql.Int(1)).As("count2"),
+			sql.Count(sql.Int(1)).As("count3"),
 			sql.String("sup").As("greeting"),
 			sql.Int(42).As("meaning_of_life"),
 		).

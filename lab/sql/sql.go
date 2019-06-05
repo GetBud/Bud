@@ -51,3 +51,10 @@ func Int(val int) stmt.Int {
 func String(val string) stmt.String {
 	return stmt.NewString(val)
 }
+
+// Functions ...
+
+// Count ...
+func Count(expr stmt.Expression) stmt.Function {
+	return stmt.NewFunction("COUNT", expr)
+}
