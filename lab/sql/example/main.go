@@ -21,7 +21,7 @@ var (
 func main() {
 	subquery := sql.Select(usersIDCol).From(usersTable)
 
-	qry, args := sql.
+	qry, _ := sql.
 		Select(
 			usersIDCol,
 			usersNameCol.As("username"),
@@ -50,5 +50,4 @@ func main() {
 		Build()
 
 	fmt.Println(qry)
-	fmt.Println(args)
 }
