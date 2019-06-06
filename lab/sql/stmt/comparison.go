@@ -50,11 +50,13 @@ func (c *comparisonOperations) Lte(expr Expression) Condition {
 }
 
 // In ...
+// TODO: This might not be right.
 func (c *comparisonOperations) In(expr Expression) Condition {
 	return NewComparisonCondition(token.In, c.expr, expr)
 }
 
 // NotIn ...
+// TODO: This might not be right.
 func (c *comparisonOperations) NotIn(expr Expression) Condition {
 	return NewComparisonCondition(token.NotIn, c.expr, expr)
 }

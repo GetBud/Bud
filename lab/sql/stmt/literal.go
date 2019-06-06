@@ -9,7 +9,6 @@ import (
 // String ...
 type String struct {
 	comparisonOperations
-
 	val   string
 	alias string
 }
@@ -43,7 +42,6 @@ func (s *String) BuildExpression(ctx *builder.Context) {
 // Int ...
 type Int struct {
 	comparisonOperations
-
 	val   int
 	alias string
 }
@@ -74,7 +72,6 @@ func (i *Int) BuildExpression(ctx *builder.Context) {
 
 type Null struct {
 	comparisonOperations
-
 	alias string
 }
 
