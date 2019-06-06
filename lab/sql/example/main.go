@@ -44,6 +44,8 @@ func main() {
 			usersEmailCol.Eq(usersIDCol),
 		)).
 		Where(usersNameCol.Eq(sql.String("seeruk"))).
+		Where(usersNameCol.NotBetween(sql.String("hmmmm"), sql.String("siodfiusdf"))).
+		Where(usersNameCol.Is(sql.Null())).
 		Having(usersNameCol.Eq(sql.String("seeruk"))).
 		Build()
 

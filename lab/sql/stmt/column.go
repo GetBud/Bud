@@ -2,36 +2,41 @@ package stmt
 
 import (
 	"github.com/getbud/bud/lab/sql/builder"
-	"github.com/getbud/bud/lab/sql/token"
 )
 
 // Column ...
 type Column struct {
+	comparisonOperations
+
 	table Table
 	name  string
 	alias string
 }
 
 // NewColumn returns a new Column.
-func NewColumn(table Table, name string) Column {
-	return Column{
+func NewColumn(table Table, name string) *Column {
+	col := &Column{
 		table: table,
 		name:  name,
 	}
+
+	col.comparisonOperations = comparisonOperations{col}
+
+	return col
 }
 
 // Alias ...
-func (c Column) Alias() string {
+func (c *Column) Alias() string {
 	return c.alias
 }
 
-func (c Column) As(alias string) Column {
+func (c *Column) As(alias string) *Column {
 	c.alias = alias
 	return c
 }
 
 // BuildExpression ...
-func (c Column) BuildExpression(ctx *builder.Context) {
+func (c *Column) BuildExpression(ctx *builder.Context) {
 	ctx.Write(`"`)
 
 	if !c.table.IsEmpty() {
@@ -51,9 +56,4 @@ func (c Column) BuildExpression(ctx *builder.Context) {
 
 	ctx.Write(c.name)
 	ctx.Write(`"`)
-}
-
-// Eq ...
-func (c Column) Eq(expr Expression) Condition {
-	return NewComparisonCondition(token.Equal, c, expr)
 }

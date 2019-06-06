@@ -13,50 +13,50 @@ type Select struct {
 }
 
 // NewSelect ...
-func NewSelect(selectExpressions ...SelectExpression) Select {
-	return Select{
+func NewSelect(selectExpressions ...SelectExpression) *Select {
+	return &Select{
 		selectExpressions: selectExpressions,
 	}
 }
 
 // Distinct ...
-func (s Select) Distinct() Select {
+func (s *Select) Distinct() *Select {
 	s.distinct = true
 	return s
 }
 
 // Select ...
-func (s Select) Select(expressions ...SelectExpression) Select {
+func (s *Select) Select(expressions ...SelectExpression) *Select {
 	s.selectExpressions = append(s.selectExpressions, expressions...)
 	return s
 }
 
 // From ...
-func (s Select) From(fromItems ...FromItem) Select {
+func (s *Select) From(fromItems ...FromItem) *Select {
 	s.fromItems = append(s.fromItems, fromItems...)
 	return s
 }
 
 // Where ...
-func (s Select) Where(conditions ...Condition) Select {
+func (s *Select) Where(conditions ...Condition) *Select {
 	s.whereConditions = append(s.whereConditions, conditions...)
 	return s
 }
 
 // Having ...
-func (s Select) Having(conditions ...Condition) Select {
+func (s *Select) Having(conditions ...Condition) *Select {
 	s.havingConditions = append(s.havingConditions, conditions...)
 	return s
 }
 
 // As ...
-func (s Select) As(alias string) Select {
+func (s *Select) As(alias string) *Select {
 	s.alias = alias
 	return s
 }
 
 // WriteFromItem ...
-func (s Select) WriteFromItem(ctx *builder.Context) {
+func (s *Select) WriteFromItem(ctx *builder.Context) {
 	ctx.Write("(")
 	s.WriteStatement(ctx)
 	ctx.Write(") AS ")
@@ -64,7 +64,7 @@ func (s Select) WriteFromItem(ctx *builder.Context) {
 }
 
 // WriteStatement ...
-func (s Select) WriteStatement(ctx *builder.Context) {
+func (s *Select) WriteStatement(ctx *builder.Context) {
 	ctx.Write("SELECT ")
 
 	if s.distinct {
@@ -148,7 +148,7 @@ func (s Select) WriteStatement(ctx *builder.Context) {
 }
 
 // Build ...
-func (s Select) Build() (string, []interface{}) {
+func (s *Select) Build() (string, []interface{}) {
 	ctx := builder.NewContext()
 
 	s.WriteStatement(ctx)

@@ -10,8 +10,8 @@ type Table struct {
 }
 
 // NewTable returns a new Table.
-func NewTable(schema Schema, name string) Table {
-	return Table{
+func NewTable(schema Schema, name string) *Table {
+	return &Table{
 		schema: schema,
 		name:   name,
 	}
@@ -24,12 +24,12 @@ func (t Table) As(alias string) Table {
 }
 
 // Column ...
-func (t Table) Column(name string) Column {
+func (t Table) Column(name string) *Column {
 	return NewColumn(t, name)
 }
 
 // C ...
-func (t Table) C(name string) Column {
+func (t Table) C(name string) *Column {
 	return t.Column(name)
 }
 

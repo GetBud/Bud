@@ -6,19 +6,19 @@ type Schema struct {
 }
 
 // NewSchema returns a new Schema.
-func NewSchema(name string) Schema {
-	return Schema{
+func NewSchema(name string) *Schema {
+	return &Schema{
 		Name: name,
 	}
 }
 
 // Table ...
-func (s Schema) Table(name string) Table {
+func (s Schema) Table(name string) *Table {
 	return NewTable(s, name)
 }
 
 // T ...
-func (s Schema) T(name string) Table {
+func (s Schema) T(name string) *Table {
 	return s.Table(name)
 }
 
