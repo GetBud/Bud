@@ -39,6 +39,20 @@ func (s *SelectStatement) Select(expr string, args ...interface{}) *SelectStatem
 	return s
 }
 
+// Selects ...
+func (s *SelectStatement) Selects(exprs []string, args ...interface{}) *SelectStatement {
+	for i, expr := range exprs {
+		exprs[i] = strings.Join(strings.Fields(expr), " ")
+	}
+
+	s.selections = append(s.selections, expression{
+		expr: strings.Join(exprs, ", "),
+		args: args,
+	})
+
+	return s
+}
+
 // From ...
 func (s *SelectStatement) From(fromItem string, args ...interface{}) *SelectStatement {
 	s.fromItems = append(s.fromItems, expression{
