@@ -1,12 +1,16 @@
 package stmt
 
-import "github.com/getbud/bud/lab/sql/builder"
+import (
+	"github.com/getbud/bud/lab/sql/builder"
+	"github.com/getbud/bud/lab/sql/token"
+)
 
 // Select ...
 type Select struct {
 	distinct          bool
 	selectExpressions []SelectExpression
 	fromItems         []FromItem
+	joins             []*Join
 	whereConditions   []Condition
 	havingConditions  []Condition
 	alias             string
@@ -35,6 +39,17 @@ func (s *Select) Select(expressions ...SelectExpression) *Select {
 func (s *Select) From(fromItems ...FromItem) *Select {
 	s.fromItems = append(s.fromItems, fromItems...)
 	return s
+}
+
+// Join ...
+func (s *Select) Join(join *Join) *Select {
+	s.joins = append(s.joins, join)
+	return s
+}
+
+// InnerJoin ...
+func (s *Select) InnerJoin(fromItem FromItem, conditions ...Condition) *Select {
+	return s.Join(NewJoin(token.InnerJoin, fromItem).On(conditions...))
 }
 
 // Where ...
@@ -97,6 +112,12 @@ func (s *Select) WriteStatement(ctx *builder.Context) {
 			if i < len(s.fromItems)-1 {
 				ctx.Write(", ")
 			}
+		}
+	}
+
+	if len(s.joins) > 0 {
+		for _, join := range s.joins {
+			join.WriteJoin(ctx)
 		}
 	}
 

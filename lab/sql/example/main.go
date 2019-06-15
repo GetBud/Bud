@@ -8,13 +8,13 @@ import (
 
 var (
 	// usersTable ...
-	usersTable    = sql.Schema("bud").Table("users").As("u")
+	usersTable    = sql.Schema("bud").Table("users")
 	usersIDCol    = usersTable.Column("id")
 	usersNameCol  = usersTable.Column("name")
 	usersEmailCol = usersTable.Column("email")
 
 	// accountsTable ...
-	accountsTable = sql.Schema("bud").Table("accounts").As("a")
+	accountsTable = sql.Schema("bud").Table("accounts")
 	accountsIDCol = accountsTable.Column("id")
 )
 
@@ -26,25 +26,23 @@ func main() {
 			usersIDCol,
 			usersNameCol.As("username"),
 			usersEmailCol,
-			sql.Function("COUNT", accountsIDCol).As("count"),
-			sql.Function("COUNT", sql.Int(1)).As("count2"),
 			sql.Count(sql.Int(1)).As("count3"),
 			sql.String("sup").As("greeting"),
-			sql.Int(42).As("meaning_of_life"),
+			sql.Column("sq.id"),
 		).
-		From(usersTable).
-		From(subquery.As("hello")).
-		From(subquery.As("hello2")).
+		From(usersTable.As("u")).
+		From(subquery.As("sq")).
+		InnerJoin(usersTable).
 		Where(sql.And(
 			usersIDCol.Eq(accountsIDCol),
-			sql.Function("COUNT", accountsIDCol).Eq(sql.Int(123)),
+			sql.Count(accountsIDCol).Eq(sql.Int(123)),
 		)).
 		Where(sql.Or(
 			usersEmailCol.Eq(usersNameCol),
 			usersEmailCol.Eq(usersIDCol),
 		)).
 		Where(usersNameCol.Eq(sql.String("seeruk"))).
-		Where(usersNameCol.NotBetween(sql.String("hmmmm"), sql.String("siodfiusdf"))).
+		Where(usersNameCol.NotBetween(sql.String("a"), sql.String("z"))).
 		Where(usersNameCol.Is(sql.Null())).
 		Having(usersNameCol.Eq(sql.String("seeruk"))).
 		Build()

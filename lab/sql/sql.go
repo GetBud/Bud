@@ -25,6 +25,11 @@ func Column(name string) *stmt.Column {
 	return stmt.NewColumn(stmt.Table{}, name)
 }
 
+// Join ...
+func Join(joinType token.JoinType, fromItem stmt.FromItem) *stmt.Join {
+	return stmt.NewJoin(joinType, fromItem)
+}
+
 // Function ...
 // TODO: We can shortcut a ton of common functions, and make it easier to not mess them up too by
 // making functions for many of them. May be best to be in another package though?
